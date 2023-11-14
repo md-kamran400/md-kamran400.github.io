@@ -214,63 +214,7 @@ function scrollActive() {
 }
 window.addEventListener("scroll", scrollActive);
 
-/*==================== CHANGE BACKGROUND HEADER ====================*/
-// function scrollHeader() {
-//   const nav = document.getElementById("header");
-//   // When the scroll is greater than 200 viewport height, add the scroll-header class to the header tag
-//   if (this.scrollY >= 80) nav.classList.add("scroll-header");
-//   else nav.classList.remove("scroll-header");
-// }
-// window.addEventListener("scroll", scrollHeader);
 
-// /*==================== SHOW SCROLL UP ====================*/
-// function scrollUp() {
-//   const scrollUp = document.getElementById("scroll-up");
-//   // When the scroll is higher than 560 viewport height, add the show-scroll class to the a tag with the scroll-top class
-//   if (this.scrollY >= 560) scrollUp.classList.add("show-scroll");
-//   else scrollUp.classList.remove("show-scroll");
-// }
-// window.addEventListener("scroll", scrollUp);
-
-// /*==================== DARK LIGHT THEME ====================*/
-
-// const themeButton = document.getElementById("theme-button");
-// const darkTheme = "dark-theme";
-// const iconTheme = "uil-sun";
-
-// // Previously selected topic (if user selected)
-// const selectedTheme = localStorage.getItem("selected-theme");
-// const selectedIcon = localStorage.getItem("selected-icon");
-
-// // We obtain the current theme that the interface has by validating the dark-theme class
-// const getCurrentTheme = () =>
-//   document.body.classList.contains(darkTheme) ? "dark" : "light";
-// const getCurrentIcon = () =>
-//   themeButton.classList.contains(iconTheme) ? "uil-moon" : "uil-sun";
-
-// // We validate if the user previously chose a topic
-// if (selectedTheme) {
-//   // If the validation is fulfilled, we ask what the issue was to know if we activated or deactivated the dark
-//   document.body.classList[selectedTheme === "dark" ? "add" : "remove"](
-//     darkTheme
-//   );
-//   themeButton.classList[selectedIcon === "uil-moon" ? "add" : "remove"](
-//     iconTheme
-//   );
-// }
-
-// // Activate / deactivate the theme manually with the button
-// themeButton.addEventListener("click", () => {
-//   // Add or remove the dark / icon theme
-//   document.body.classList.toggle(darkTheme);
-//   themeButton.classList.toggle(iconTheme);
-//   // We save the theme and the current icon that the user chose
-//   localStorage.setItem("selected-theme", getCurrentTheme());
-//   localStorage.setItem("selected-icon", getCurrentIcon());
-// });
-
-
-// second applring /
 
 
 // second
@@ -295,7 +239,9 @@ const applyDarkThemeStyles = () => {
     firstSpan.style.fontSize = "3.5rem";
     firstSpan.style.color = "rgb(193, 248, 248)";
     firstSpan.style.textShadow = "0 0 0 transparent, 0 0 10px #2695ff, 0 0 20px rgba(38, 149, 255, 0.5), 0 0 40px #2695ff, 0 0 100px #2695ff";
-    firstSpan.style.transition = ".5s"
+    firstSpan.style.transition = ".5s";
+
+    
   }
 };
 
@@ -306,6 +252,11 @@ const removeDarkThemeStyles = () => {
     firstSpan.style.fontSize = "";
     firstSpan.style.color = "";
     firstSpan.style.textShadow = "";
+
+    // Remove the yellow background
+    // Add yellow background covering 50% of the space
+    // document.body.style.background = "linear-gradient(to bottom, rgb(255, 255, 102) 10%, #333333 10%)";
+    document.body.style.background = "";
   }
 };
 
@@ -341,6 +292,12 @@ themeButton.addEventListener("click", () => {
     removeDarkThemeStyles();
   }
 });
+
+
+
+
+
+
 
 
 
@@ -400,3 +357,6 @@ function typeText() {
 }
 
 typeText();
+
+
+
