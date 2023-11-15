@@ -1,3 +1,62 @@
+document.addEventListener("DOMContentLoaded", function () {
+  // Smooth scrolling for anchor links
+  document.querySelectorAll('a[href^="#home"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+
+          const targetId = this.getAttribute('href').substring(1);
+          const targetElement = document.getElementById(targetId);
+
+          if (targetElement) {
+              window.scrollTo({
+                  top: targetElement.offsetTop,
+                  behavior: 'smooth'
+              });
+          }
+      });
+  });
+});
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  // Smooth scrolling for anchor links
+  document.querySelectorAll('a[href^="#about"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+
+          const targetId = this.getAttribute('href').substring(1);
+          const targetElement = document.getElementById(targetId);
+
+          if (targetElement) {
+              window.scrollTo({
+                  top: targetElement.offsetTop,
+                  behavior: 'smooth'
+              });
+          }
+      });
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*==================== MENU SHOW Y HIDDEN ====================*/
 const navMenu = document.getElementById("nav-menu"),
   navToggle = document.getElementById("nav-toggle"),
