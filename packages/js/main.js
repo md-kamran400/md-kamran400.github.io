@@ -372,7 +372,7 @@ let resumebtn = document.getElementById("resume-button-2");
 
 resumebtn.addEventListener("click", () => {
   window.open(
-    "https://drive.google.com/file/d/1Gx8hs_JaPdH8HqaaPiSpyvE9HFeJrrlQ/view?usp=sharing",
+    "https://drive.google.com/file/d/1czYnhNuGnW4BM0C-vz3EX9MHHimWBuNg/view?usp=drive_link",
     "_blank",
     "noopener,noreferrer"
   );
@@ -382,7 +382,7 @@ resumebtn.addEventListener("click", () => {
 
   resumebtn1.addEventListener("click", () => {
     window.open(
-      "https://drive.google.com/file/d/1Gx8hs_JaPdH8HqaaPiSpyvE9HFeJrrlQ/view?usp=sharing",
+      "https://drive.google.com/file/d/1czYnhNuGnW4BM0C-vz3EX9MHHimWBuNg/view?usp=drive_link",
       "_blank",
       "noopener,noreferrer"
     );
