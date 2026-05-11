@@ -12,49 +12,76 @@ interface ResumeProps {
 }
 
 const Resume = ({ isDark }: ResumeProps) => {
-  const experience = [
-    {
-      title: "Full Stack Web Developer",
-      company: "Raisematters Pvt. Ltd.",
-      period: "June 2024 - Present",
-      description:
-        "Leading development of enterprise web applications, mentoring junior developers, and implementing best practices for code quality and performance.",
-      achievements: [
-        " Collaborated with cross-functional teams for code reviews and feature development, demonstrating effective communication and teamwork skills applicable to stakeholder interactions",
-        " Integrated third-party APIs for enhanced functionality, showcasing strong problem-solving ability and experience in understanding and implementing complex systems.",
-        " Troubleshooted front-end and back-end issues, reflecting strong analytical skills which are fundamental for conducting data analysis and identifying trends",
-      ],
-    },
-    {
-      title: "Frontend Developer",
-      company: "Masai School",
-      period: "May 2023 - june 2024",
-      description:
-        "Developed and maintained full-stack web applications using modern technologies and frameworks.",
-      achievements: [
-        "Collaborated with stakeholders to gather data requirements for user authentication and purchasing processes",
-        "Conducted technical interviews for Full Stack Web Developer candidates, evaluating over one year of student cohorts on front-end, back-end, and database technologies to assess practical and conceptual understanding",
-        "Developed WebSites for product display and management using React and Redux",
-      ],
-    },
-  ];
+const experience = [
+  {
+    title: "Full Stack Developer",
+    company: "Raisematters Pvt. Ltd.",
+    period: "June 2024 - Present",
+    description:
+      "Working mainly on backend development for real-time manufacturing and enterprise applications, building scalable APIs, workflow automation, and third-party integrations.",
+    achievements: [
+      "Worked closely with frontend developers, backend teams, and business stakeholders to build and deliver new features while improving application quality through code reviews and collaboration",
+      "Built and managed backend services for real-time manufacturing and production management applications, handling production orders, machine planning, operator assignments, and workflow execution",
+      "Developed a complete manufacturing workflow system including raw material management, parts creation, production order allocation, machine scheduling, auto scheduling, and urgent rescheduling based on business priorities",
+      "Integrated third-party SAP APIs to automate production order and parts synchronization, reducing manual work and improving operational efficiency",
+      "Built secure authentication and authorization systems including OTP-based login verification, user access management, and backend security implementations",
+      "Designed and optimized REST APIs and database operations to handle high-volume production data efficiently and improve scalability",
+      "Currently contributing to an ongoing enterprise project for Adani Group",
+    ],
+  },
+  {
+    title: "MERN Stack Developer Intern",
+    company: "Masai School",
+    period: "May 2023 - June 2024",
+    description:
+      "Worked on full-stack web application development while mentoring students and supporting technical learning processes.",
+    achievements: [
+      "Built and maintained web applications using React, Redux, Node.js, Express.js, and MongoDB",
+      "Developed secure authentication systems and product management workflows while handling feature enhancements and bug fixes",
+      "Reviewed student assignments and projects, helping them improve code quality and practical understanding",
+      "Conducted technical interviews for Full Stack Developer candidates and evaluated frontend, backend, and database skills",
+      "Solved technical queries and guided students in debugging and implementing full-stack development concepts",
+    ],
+  },
+  {
+    title: "Freelance Full Stack Developer",
+    company: "Client Projects",
+    period: "Project Based",
+    description:
+      "Built client-based e-commerce and management systems using the MERN stack with full admin and user-side functionality.",
+    achievements: [
+      "Developed an e-commerce platform for men, women, and kids clothing with complete product and order management",
+      "Built admin panel for managing orders, products, users, and purchase workflows",
+      "Integrated PhonePe payment gateway for real-time payments and implemented Cash on Delivery functionality",
+      "Integrated Xpressbees delivery APIs for shipment handling and order tracking",
+      "Built purchase history and order tracking systems for users",
+    ],
+  },
+];
 
-  const education = [
-     {
-      degree: "Full Stack Web Development Certification",
-      institution: "Masai School",
-      period: "November 2022 - June 2023",
-      description:
-        "Intensive program covering MERN stack and modern development practices",
-    },
-    {
-      degree: "High School Diploma",
-      institution: "March 2020 - March 2022",
-      period: "March 2020 - March 2022",
-      // description: "Specialized in Software Engineering and Web Technologies",
-    },
-   
-  ];
+const education = [
+  {
+    degree: "Bachelor of Science in Information Technology (B.Sc IT)",
+    institution: "Marwari College, Ranchi",
+    period: "2023 - 2026 (Pursuing)",
+    description:
+      "Currently pursuing graduation in Information Technology while working on full-stack development and enterprise applications",
+  },
+  {
+    degree: "Full Stack Web Development Certification",
+    institution: "Masai School",
+    period: "November 2022 - June 2023",
+    description:
+      "Completed intensive full-stack web development training focused on MERN stack, data structures, and modern development practices",
+  },
+  {
+    degree: "Higher Secondary (12th) - Science",
+    institution: "Gomia High School",
+    period: "March 2020 - March 2022",
+    description:
+      "Completed higher secondary education with Science stream",
+  },
+];
 
   const certifications = [
     "Masai Completion Certificate",

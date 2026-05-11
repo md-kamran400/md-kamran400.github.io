@@ -19,14 +19,14 @@ const About = ({ isDark }: AboutProps) => {
   const [animatedValue, setAnimatedValue] = useState(0);
 
   const stats = [
-    { icon: Briefcase, label: "Years Experience", value: "2+", suffix: "" },
+    { icon: Briefcase, label: "Years Experience", value: "3+", suffix: "" },
     { icon: Award, label: "Projects Completed", value: "10", suffix: "+" },
     { icon: Target, label: "Technologies", value: "2", suffix: "" },
   ];
 
   const personalInfo = [
     { icon: MapPin, label: "Location", value: "India" },
-    { icon: Calendar, label: "Experience", value: "2+ Years" },
+    { icon: Calendar, label: "Experience", value: "3+ Years" },
     { icon: User, label: "Status", value: "Available" },
   ];
 
@@ -190,7 +190,7 @@ const About = ({ isDark }: AboutProps) => {
                     isDark ? "text-gray-300" : "text-gray-700"
                   }`}
                 >
-                  I'm a passionate Full Stack Developer with over 2 years of
+                  I'm a passionate Full Stack Developer with nearly 3 years of
                   experience crafting digital solutions that blend innovative
                   design with robust functionality.
                 </p>

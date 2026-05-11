@@ -54,9 +54,9 @@ const Skills = ({ isDark }: SkillsProps) => {
       skills: [
         { name: 'MySql', icon: Database },
         { name: 'MongoDB', icon: Database },
-        // { name: 'Redis', icon: Database },
+        { name: 'PostgreSQL', icon: Database },
         { name: 'Supabase', icon: Cloud },
-        // { name: 'Docker', icon: Terminal },
+        { name: 'Docker', icon: Terminal },
         { name: 'Git', icon: GitBranch }
       ]
     },

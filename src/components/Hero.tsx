@@ -14,7 +14,7 @@ interface HeroProps {
 }
 
 const Hero = ({ isDark }: HeroProps) => {
- const [text, setText] = useState("");
+  const [text, setText] = useState("");
   const [displayedText, setDisplayedText] = useState("");
   const fullText = "Full Stack Web Developer";
   const [showCursor, setShowCursor] = useState(true);
@@ -23,7 +23,7 @@ const Hero = ({ isDark }: HeroProps) => {
   >([]);
   const containerRef = useRef<HTMLDivElement>(null);
 
- useEffect(() => {
+  useEffect(() => {
     // Reset floating letters when component mounts
     const letters = fullText.split(" ").map((char, index) => ({
       char,
@@ -48,7 +48,7 @@ const Hero = ({ isDark }: HeroProps) => {
 
     // Start cursor blinking
     const cursorInterval = setInterval(() => {
-      setShowCursor(prev => !prev);
+      setShowCursor((prev) => !prev);
     }, 500);
 
     return () => {
@@ -56,7 +56,6 @@ const Hero = ({ isDark }: HeroProps) => {
       clearInterval(cursorInterval);
     };
   }, []);
-
 
   useEffect(() => {
     // Animate floating letters coming together
@@ -76,6 +75,7 @@ const Hero = ({ isDark }: HeroProps) => {
       }, 500);
     }
   }, []);
+
   return (
     <section
       id="home"
@@ -130,57 +130,146 @@ const Hero = ({ isDark }: HeroProps) => {
         <div className="absolute inset-0 opacity-30">
           <div className="grid-background animate-grid-flow"></div>
         </div>
-
-        {/* Floating Particles */}
-        {/* {[...Array(15)].map((_, i) => (
-          <div
-            key={i}
-            className={`absolute w-1 h-1 rounded-full animate-float ${
-              isDark ? "bg-green-400/50" : "bg-green-600/50"
-            }`}
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 10}s`,
-              animationDuration: `${Math.random() * 20 + 10}s`,
-            }}
-          ></div>
-        ))} */}
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
-          {/* Enhanced Profile Avatar with Floating Rings */}
+          {/* Enhanced Profile Avatar with Flowing Rotating Rings */}
           <div className="max-w-4xl mx-auto text-center">
-          {/* Clean Profile Avatar */}
-          <div className="mb-8 inline-block">
-            <div className={`relative w-32 h-32 mx-auto rounded-full border-4 overflow-hidden group ${
-              isDark ? 'border-green-500 shadow-2xl shadow-green-500/30' : 'border-green-600 shadow-2xl shadow-green-600/20'
-            }`}>
-              <div className={`absolute inset-0 ${
-                isDark 
-                  ? 'bg-gradient-to-br from-green-500/20 via-blue-500/10 to-purple-500/5' 
-                  : 'bg-gradient-to-br from-green-100 via-blue-50 to-purple-50'
-              }`}></div>
-              
-              {/* Subtle ring animation */}
-              <div className={`absolute inset-0 rounded-full border-2 opacity-0 group-hover:opacity-100 transition-all duration-1000 ${
-                isDark ? 'border-green-400' : 'border-green-500'
-              }`} style={{ animation: 'spin 3s linear infinite' }}></div>
-              
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="relative">
-                  <Code2 size={64} className={`${isDark ? 'text-green-400' : 'text-green-600'} drop-shadow-lg`} />
-                  <Sparkles 
-                    size={20} 
-                    className={`absolute -top-2 -right-2 ${
-                      isDark ? 'text-yellow-400' : 'text-yellow-500'
-                    } animate-pulse`} 
-                  />
+            {/* Clean Profile Avatar with true 360° flowing rings */}
+            <div
+              className="mb-8 inline-block relative"
+              style={{ width: "128px", height: "128px" }}
+            >
+              {/* Ring 1 — conic sweep, slow CW, green */}
+              <div
+                className="avatar-ring"
+                style={{
+                  width: "168px",
+                  height: "168px",
+                  left: "-20px",
+                  top: "-20px",
+                  background: `conic-gradient(from 0deg, transparent 60%, ${isDark ? "#4ade80" : "#16a34a"} 100%)`,
+                  animation: "ringSpinCW 4s linear infinite",
+                }}
+              >
+                {/* Glowing dot at head of sweep */}
+                <div
+                  className="ring-dot"
+                  style={{
+                    background: isDark ? "#4ade80" : "#16a34a",
+                    boxShadow: `0 0 8px 3px ${isDark ? "#4ade8099" : "#16a34a99"}`,
+                  }}
+                />
+              </div>
+
+              {/* Ring 2 — conic sweep, medium CCW, lighter green */}
+              <div
+                className="avatar-ring"
+                style={{
+                  width: "152px",
+                  height: "152px",
+                  left: "-12px",
+                  top: "-12px",
+                  background: `conic-gradient(from 180deg, transparent 55%, ${isDark ? "#86efac" : "#22c55e"} 100%)`,
+                  animation: "ringSpinCCW 6s linear infinite",
+                }}
+              >
+                <div
+                  className="ring-dot"
+                  style={{
+                    background: isDark ? "#86efac" : "#22c55e",
+                    boxShadow: `0 0 6px 2px ${isDark ? "#86efac88" : "#22c55e88"}`,
+                  }}
+                />
+              </div>
+
+              {/* Ring 3 — dashed ring, slow CCW */}
+              <div
+                style={{
+                  position: "absolute",
+                  width: "182px",
+                  height: "182px",
+                  left: "-27px",
+                  top: "-27px",
+                  borderRadius: "50%",
+                  border: `1.5px dashed ${isDark ? "#4ade8044" : "#16a34a44"}`,
+                  animation: "ringSpinCCW 18s linear infinite",
+                }}
+              />
+
+              {/* Ring 4 — dotted outermost, slow CW */}
+              <div
+                style={{
+                  position: "absolute",
+                  width: "196px",
+                  height: "196px",
+                  left: "-34px",
+                  top: "-34px",
+                  borderRadius: "50%",
+                  border: `1.5px dotted ${isDark ? "#4ade8033" : "#16a34a33"}`,
+                  animation: "ringSpinCW 25s linear infinite",
+                }}
+              />
+
+              {/* Main Avatar */}
+              <div
+                className={`relative w-32 h-32 mx-auto rounded-full border-4 overflow-hidden group ${
+                  isDark
+                    ? "border-green-500 shadow-2xl shadow-green-500/30"
+                    : "border-green-600 shadow-2xl shadow-green-600/20"
+                }`}
+                style={{ position: "relative", zIndex: 2 }}
+              >
+                <div
+                  className={`absolute inset-0 ${
+                    isDark
+                      ? "bg-gradient-to-br from-green-500/20 via-blue-500/10 to-purple-500/5"
+                      : "bg-gradient-to-br from-green-100 via-blue-50 to-purple-50"
+                  }`}
+                ></div>
+
+                {/* Inner rotating ring on hover */}
+                <div
+                  className={`absolute inset-0 rounded-full border-2 opacity-0 group-hover:opacity-100 transition-all duration-700 ${
+                    isDark ? "border-green-400" : "border-green-500"
+                  }`}
+                  style={{ animation: "ringSpinCW 2s linear infinite" }}
+                ></div>
+
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="relative">
+                    <Code2
+                      size={64}
+                      className={`${isDark ? "text-green-400" : "text-green-600"} drop-shadow-lg`}
+                    />
+                    <Sparkles
+                      size={20}
+                      className={`absolute -top-2 -right-2 ${
+                        isDark ? "text-yellow-400" : "text-yellow-500"
+                      } animate-pulse`}
+                    />
+                  </div>
                 </div>
               </div>
+
+              {/* Floating particles around avatar */}
+              {[...Array(8)].map((_, i) => (
+                <div
+                  key={i}
+                  className={`absolute w-1.5 h-1.5 rounded-full ${
+                    isDark ? "bg-green-400" : "bg-green-500"
+                  } animate-float-particle`}
+                  style={{
+                    left: "50%",
+                    top: "50%",
+                    animationDelay: `${i * 0.5}s`,
+                    animationDuration: "3s",
+                    transformOrigin: `${Math.cos((i * 45 * Math.PI) / 180) * 80}px ${Math.sin((i * 45 * Math.PI) / 180) * 80}px`,
+                  }}
+                />
+              ))}
             </div>
-          </div>
           </div>
 
           {/* Enhanced Name with Gradient */}
@@ -257,9 +346,10 @@ const Hero = ({ isDark }: HeroProps) => {
                 : "text-gray-600 bg-white/50 border border-green-200"
             }`}
           >
-            Crafting exceptional digital experiences with 2+ years of expertise
-            in modern web technologies. Passionate about building scalable,
-            performant, and user-centric applications.
+            Building scalable web applications with nearly 3 years of hands-on
+            experience in modern web technologies. Passionate about backend
+            development, API integrations, and creating efficient, secure, and
+            user-focused digital solutions.
           </p>
 
           {/* Enhanced CTA Buttons */}
@@ -306,19 +396,23 @@ const Hero = ({ isDark }: HeroProps) => {
           </div>
 
           {/* Enhanced Social Links */}
-          <div className="flex items-center justify-center gap-6">
+          <div className="flex items-center justify-center gap-4 mt-2">
             {[
-              { icon: Github, href: "https://github.com/md-kamran400", label: "GitHub" },
+              {
+                icon: Github,
+                href: "https://github.com/md-kamran400",
+                label: "GitHub",
+              },
               {
                 icon: Linkedin,
                 href: "https://www.linkedin.com/in/md-kamran-757bb0250/",
                 label: "LinkedIn",
               },
-              // {
-              //   icon: Mail,
-              //   href: "mailto:contact@mdkamran.dev",
-              //   label: "Email",
-              // },
+              {
+                icon: Mail,
+                href: "mailto:your@email.com",
+                label: "Mail",
+              },
             ].map((social, index) => {
               const Icon = social.icon;
               return (
@@ -327,14 +421,19 @@ const Hero = ({ isDark }: HeroProps) => {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`group relative p-4 rounded-xl transition-all duration-300 transform hover:scale-110 hover:rotate-12 ${
+                  className={`group relative flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all duration-300 transform hover:scale-110 hover:-translate-y-1 ${
                     isDark
                       ? "bg-green-500/10 hover:bg-green-500/20 text-green-400"
                       : "bg-green-100 hover:bg-green-200 text-green-600"
                   }`}
                   aria-label={social.label}
                 >
-                  <Icon size={24} className="relative z-10" />
+                  <Icon size={22} className="relative z-10" />
+                  <span
+                    className={`text-xs font-medium relative z-10 ${isDark ? "text-green-400/80" : "text-green-700/80"}`}
+                  >
+                    {social.label}
+                  </span>
                   <div
                     className={`absolute inset-0 rounded-xl bg-gradient-to-br from-green-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
                   ></div>
@@ -346,24 +445,61 @@ const Hero = ({ isDark }: HeroProps) => {
       </div>
 
       {/* Enhanced Scroll Indicator */}
-      <div className="absolute bottom-8 left -translate-x-1/2 animate-bounce">
+      <button
+        onClick={() => {
+          window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: "smooth",
+          });
+        }}
+        className="fixed bottom-8 right-8 animate-bounce cursor-pointer focus:outline-none group bg-transparent border-0 p-0 z-50"
+        aria-label="Scroll to bottom"
+      >
         <div className="relative">
           <ChevronDown
             size={32}
-            className={`relative z-10 ${
-              isDark ? "text-green-400" : "text-green-600"
+            className={`relative z-10 transition-colors duration-300 ${
+              isDark
+                ? "text-green-400 group-hover:text-green-300"
+                : "text-green-600 group-hover:text-green-500"
             }`}
           />
           <div
-            className={`absolute inset-0 rounded-full blur-md ${
+            className={`absolute inset-0 rounded-full blur-md opacity-50 group-hover:opacity-80 transition-opacity duration-300 ${
               isDark ? "bg-green-400/50" : "bg-green-600/50"
             }`}
           ></div>
         </div>
-      </div>
+      </button>
 
       {/* Add CSS for floating ring animations */}
       <style>{`
+        /* ── Avatar Ring styles ── */
+        .avatar-ring {
+          position: absolute;
+          border-radius: 50%;
+          /* mask so only the outer 2px band shows */
+          -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #fff calc(100% - 2.5px));
+          mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #fff calc(100% - 2.5px));
+        }
+        .ring-dot {
+          position: absolute;
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          top: -3.5px;
+          left: calc(50% - 3.5px);
+        }
+        @keyframes ringSpinCW {
+          from { transform: rotate(0deg); }
+          to   { transform: rotate(360deg); }
+        }
+        @keyframes ringSpinCCW {
+          from { transform: rotate(0deg); }
+          to   { transform: rotate(-360deg); }
+        }
+        /* ── end avatar rings ── */
+
         @keyframes floatRingLeft {
           0% {
             transform: translateX(-100px) translateY(0px) rotate(0deg);
@@ -397,6 +533,74 @@ const Hero = ({ isDark }: HeroProps) => {
           }
           100% {
             transform: translateX(100px) translateY(0px) rotate(-360deg);
+          }
+        }
+        
+        
+        @keyframes float-particle {
+          0% {
+            transform: translate(0, 0) scale(1);
+            opacity: 0.6;
+          }
+          50% {
+            transform: translate(var(--tx, 20px), var(--ty, -20px)) scale(1.5);
+            opacity: 1;
+          }
+          100% {
+            transform: translate(0, 0) scale(1);
+            opacity: 0.6;
+          }
+        }
+        
+        .animate-float-particle {
+          animation: float-particle 3s ease-in-out infinite;
+        }
+        
+        @keyframes gradient-x {
+          0%, 100% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+        }
+        
+        .animate-gradient-x {
+          background-size: 200% auto;
+          animation: gradient-x 3s ease infinite;
+        }
+        
+        @keyframes rubber-band {
+          0% {
+            transform: scale(1);
+          }
+          30% {
+            transform: scale(1.2);
+          }
+          40% {
+            transform: scale(0.95);
+          }
+          50% {
+            transform: scale(1.05);
+          }
+          65% {
+            transform: scale(0.98);
+          }
+          100% {
+            transform: scale(1);
+          }
+        }
+        
+        .animate-rubber-band {
+          display: inline-block;
+          animation: rubber-band 0.6s ease-in-out forwards;
+          opacity: 0;
+          animation: rubber-band 0.6s ease-in-out forwards, fadeIn 0.1s forwards;
+        }
+        
+        @keyframes fadeIn {
+          to {
+            opacity: 1;
           }
         }
       `}</style>

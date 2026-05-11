@@ -3,88 +3,93 @@ import { useEffect, useRef, useState } from "react";
 export default function CursorFollower() {
   const [isPointer, setIsPointer] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
-  const [isHovering, setIsHovering] = useState(false);
 
   const cursorOuter = useRef<HTMLDivElement | null>(null);
   const cursorInner = useRef<HTMLDivElement | null>(null);
-  const cursorRing = useRef<HTMLDivElement | null>(null);
-  const cursorShine = useRef<HTMLDivElement | null>(null);
   const cursorTrail = useRef<HTMLDivElement | null>(null);
+  const cursorGlow = useRef<HTMLDivElement | null>(null);
 
-  const mouse = useRef({ x: 0, y: 0 });
-  const outer = useRef({ x: 0, y: 0 });
-  const trailPoints = useRef<Array<{ x: number; y: number; size: number; opacity: number }>>([]);
+  const mouse = useRef({ x: -100, y: -100 });
+  const outer = useRef({ x: -100, y: -100 });
+  const glow = useRef({ x: -100, y: -100 });
+  const trailPoints = useRef<Array<{ x: number; y: number; opacity: number; size: number }>>([]);
 
-  // Smooth trailing motion with advanced physics
   useEffect(() => {
-    const speed = 0.1;
     let frame: number;
     let lastTime = 0;
 
     const animate = (timestamp: number) => {
-      const delta = timestamp - lastTime;
+      const delta = Math.min(timestamp - lastTime, 32);
       lastTime = timestamp;
 
-      // Advanced easing with momentum
-      const ease = isPointer ? 0.2 : 0.15;
+      // Different easing based on pointer state
+      const ease = isPointer ? 0.22 : 0.14;
+      const glowEase = isPointer ? 0.18 : 0.1;
+      
       outer.current.x += (mouse.current.x - outer.current.x) * ease;
       outer.current.y += (mouse.current.y - outer.current.y) * ease;
+      glow.current.x += (mouse.current.x - glow.current.x) * glowEase;
+      glow.current.y += (mouse.current.y - glow.current.y) * glowEase;
 
-      // Update trail points
+      // Update trail with dynamic sizing
       trailPoints.current = trailPoints.current
-        .map(point => ({
-          ...point,
-          size: point.size * 0.85,
-          opacity: point.opacity * 0.7
-        }))
-        .filter(point => point.opacity > 0.05);
+        .map(p => ({ ...p, opacity: p.opacity * 0.78 }))
+        .filter(p => p.opacity > 0.05);
 
-      // Add new trail point
-      if (delta > 0) {
+      if (delta > 0 && (Math.abs(outer.current.x - mouse.current.x) > 0.5 || Math.abs(outer.current.y - mouse.current.y) > 0.5)) {
+        const baseSize = isPointer ? 10 : 6;
+        const randomSize = baseSize + Math.random() * 3;
         trailPoints.current.unshift({
           x: outer.current.x,
           y: outer.current.y,
-          size: isPointer ? 20 : 12,
-          opacity: 0.6 // Reduced opacity
+          opacity: 0.6,
+          size: randomSize,
         });
       }
 
-      // Keep trail length manageable
+      // Limit trail length
       if (trailPoints.current.length > 8) {
         trailPoints.current = trailPoints.current.slice(0, 8);
       }
 
-      // Update DOM elements
+      // Apply transforms
       if (cursorOuter.current) {
         cursorOuter.current.style.transform = `translate3d(${outer.current.x}px, ${outer.current.y}px, 0)`;
       }
-      
+
       if (cursorInner.current) {
         cursorInner.current.style.transform = `translate3d(${mouse.current.x}px, ${mouse.current.y}px, 0)`;
       }
-      
-      if (cursorRing.current) {
-        const rotation = Date.now() / 15;
-        cursorRing.current.style.transform = `translate3d(${outer.current.x}px, ${outer.current.y}px, 0) rotate(${rotation}deg)`;
+
+      if (cursorGlow.current) {
+        cursorGlow.current.style.transform = `translate3d(${glow.current.x}px, ${glow.current.y}px, 0)`;
       }
 
-      if (cursorShine.current) {
-        const shineRotation = Date.now() / 10;
-        cursorShine.current.style.transform = `translate3d(${outer.current.x}px, ${outer.current.y}px, 0) rotate(${shineRotation}deg)`;
-      }
-
+      // Render trail with enhanced styling
       if (cursorTrail.current) {
         cursorTrail.current.innerHTML = trailPoints.current
-          .map((point, index) => `
-            <div class="absolute rounded-full bg-gradient-to-r from-cyan-400/60 to-emerald-400/60 backdrop-blur-sm"
-                  style="width: ${point.size}px; height: ${point.size}px;
-                         left: ${point.x}px; top: ${point.y}px;
-                         opacity: ${point.opacity};
-                         transform: translate(-50%, -50%) scale(${0.5 + (index * 0.07)});
-                         filter: blur(${5 - index * 0.5}px);">
-            </div>
-          `)
-          .join('');
+          .map((p, i) => {
+            const isEven = i % 2 === 0;
+            const color = isEven ? "#f97316" : "#22c55e";
+            const blurAmount = Math.min(i * 0.8, 4);
+            return `
+              <div style="
+                position: absolute;
+                border-radius: 50%;
+                background: ${color};
+                width: ${p.size}px;
+                height: ${p.size}px;
+                left: ${p.x}px;
+                top: ${p.y}px;
+                opacity: ${p.opacity * (isEven ? 0.7 : 0.5)};
+                transform: translate(-50%, -50%) scale(${1 - i * 0.08});
+                filter: blur(${blurAmount}px);
+                box-shadow: 0 0 ${blurAmount * 1.5}px ${color};
+                transition: all 0.05s linear;
+              "></div>
+            `;
+          })
+          .join("");
       }
 
       frame = requestAnimationFrame(animate);
@@ -94,241 +99,230 @@ export default function CursorFollower() {
     return () => cancelAnimationFrame(frame);
   }, [isPointer]);
 
-  // Handle mouse events
   useEffect(() => {
     const move = (e: MouseEvent) => {
       mouse.current.x = e.clientX;
       mouse.current.y = e.clientY;
 
-      const t = e.target as HTMLElement;
-      const hoverable =
-        window.getComputedStyle(t).cursor === "pointer" ||
-        ["A", "BUTTON", "INPUT", "TEXTAREA", "SELECT"].includes(t.tagName) ||
-        !!t.closest("button, a, input, textarea, select, [role='button']");
-
-      setIsPointer(hoverable);
-      setIsHovering(hoverable);
+      const target = e.target as HTMLElement;
+      let isHoverable = false;
+      
+      // Check for interactive elements
+      if (target) {
+        const computed = window.getComputedStyle(target);
+        isHoverable = 
+          computed.cursor === "pointer" ||
+          computed.cursor === "grab" ||
+          computed.cursor === "grabbing" ||
+          ["A", "BUTTON", "INPUT", "TEXTAREA", "SELECT", "SUMMARY", "DETAILS"].includes(target.tagName) ||
+          !!target.closest("button, a, input, textarea, select, [role='button'], [role='tab'], [role='link']");
+      }
+      
+      setIsPointer(isHoverable);
     };
 
-    const down = () => {
+    const down = (e: MouseEvent) => {
       setIsClicked(true);
-      // Add click ripple effect
+      // Add quick click ripple effect to trail
       if (cursorTrail.current) {
-        const ripple = document.createElement('div');
-        ripple.className = 'absolute rounded-full bg-gradient-to-r from-cyan-400 to-emerald-400 animate-ripple';
-        ripple.style.cssText = `
-          left: ${outer.current.x}px;
-          top: ${outer.current.y}px;
-          transform: translate(-50%, -50%);
+        const rippleDiv = document.createElement("div");
+        rippleDiv.style.cssText = `
+          position: fixed;
+          left: ${e.clientX}px;
+          top: ${e.clientY}px;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #f97316;
+          transform: translate(-50%, -50%) scale(0);
+          opacity: 0.8;
+          pointer-events: none;
+          z-index: 9999;
+          animation: clickRipple 0.4s ease-out forwards;
         `;
-        cursorTrail.current.appendChild(ripple);
-        setTimeout(() => ripple.remove(), 600);
+        document.body.appendChild(rippleDiv);
+        setTimeout(() => rippleDiv.remove(), 400);
       }
     };
     
     const up = () => setIsClicked(false);
-    const leave = () => setIsHovering(false);
 
     window.addEventListener("mousemove", move);
     window.addEventListener("mousedown", down);
     window.addEventListener("mouseup", up);
-    window.addEventListener("mouseleave", leave);
 
     return () => {
       window.removeEventListener("mousemove", move);
       window.removeEventListener("mousedown", down);
       window.removeEventListener("mouseup", up);
-      window.removeEventListener("mouseleave", leave);
     };
   }, []);
 
   return (
     <>
-      {/* Advanced Trail System */}
-      <div
-        ref={cursorTrail}
-        className="fixed top-0 left-0 pointer-events-none z-[9995]"
-      />
-
-      {/* Main Orbital Ring System */}
-      <div
-        ref={cursorRing}
-        className="fixed top-0 left-0 pointer-events-none z-[9997] transition-all duration-700 ease-out-expo"
-      >
-        <div className={`relative transition-all duration-500 ${isPointer ? "scale-125" : "scale-100"}`}>
-          {/* Outer Ring */}
-          <div className="w-20 h-20 rounded-full border-2 border-transparent bg-gradient-to-r from-cyan-500 via-emerald-500 to-teal-500 bg-origin-border p-0.5">
-            <div className="w-full h-full rounded-full bg-black/80 backdrop-blur-md" />
-          </div>
-          
-          {/* Orbiting Dots */}
-          <div className="absolute inset-0 animate-orbit-slow">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-cyan-400 rounded-full shadow-lg shadow-cyan-400/50" />
-          </div>
-          <div className="absolute inset-0 animate-orbit-reverse">
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-1 h-1 bg-emerald-400 rounded-full shadow-lg shadow-emerald-400/50" />
-          </div>
-        </div>
-      </div>
-
-      {/* Shine Effect Layer */}
-      <div
-        ref={cursorShine}
-        className="fixed top-0 left-0 pointer-events-none z-[9996] transition-all duration-1000 ease-out-expo"
-      >
-        <div className={`relative transition-all duration-400 ${isPointer ? "scale-150 opacity-50" : "scale-100 opacity-30"}`}>
-          <div className="w-28 h-28 rounded-full bg-gradient-conic from-transparent via-cyan-400/20 to-transparent" />
-          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-cyan-400/15 via-transparent to-emerald-400/15 blur-sm" />
-        </div>
-      </div>
-
-      {/* Outer Halo Glow */}
-      <div
-        ref={cursorOuter}
-        className="fixed top-0 left-0 z-[9998] pointer-events-none mix-blend-screen"
-      >
-        <div className={`relative transition-all duration-500 ease-out-back ${
-          isPointer 
-            ? "scale-150 opacity-35" 
-            : "scale-100 opacity-20"
-        } ${isClicked ? "scale-90 opacity-50" : ""}`}>
-          {/* Main Halo */}
-          <div className="w-16 h-16 rounded-full bg-gradient-to-r from-cyan-400/25 via-emerald-400/25 to-teal-400/25 blur-xl" />
-          
-          {/* Secondary Glow */}
-          <div className="absolute inset-0 w-20 h-20 -translate-x-2 -translate-y-2 rounded-full bg-gradient-to-r from-cyan-600/15 to-emerald-600/15 blur-lg" />
-        </div>
-      </div>
-
-      {/* Core Cursor - Updated to be smaller with less opacity */}
-      <div
-        ref={cursorInner}
-        className="fixed top-0 left-0 z-[9999] pointer-events-none"
-      >
-        <div className="relative">
-          {/* Main Core - Made smaller and more transparent */}
-          <div className={`relative transition-all duration-300 ease-out-back ${
-            isPointer
-              ? "w-4 h-4 scale-110"  // Smaller size
-              : "w-3 h-3 scale-100"  // Smaller default size
-          } ${isClicked ? "scale-70" : ""}`}>
-            {/* Core Gradient with reduced opacity */}
-            <div 
-              className="absolute inset-0 rounded-full bg-gradient-to-br from-cyan-400 via-emerald-400 to-teal-400 transform rotate-45"
-              style={{ opacity: 0.7 }} // Reduced opacity
-            />
-            
-            {/* Core Glow with reduced opacity */}
-            <div 
-              className="absolute inset-0 rounded-full bg-gradient-to-br from-cyan-400 to-emerald-400 blur-sm"
-              style={{ opacity: 0.5 }} // Reduced opacity
-            />
-            
-            {/* Center Dot - smaller and less opaque */}
-            <div 
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-0.5 h-0.5 bg-white rounded-full z-10"
-              style={{ opacity: 0.8 }} // Reduced opacity
-            />
-            
-            {/* Inner Ring with reduced opacity */}
-            <div 
-              className="absolute -inset-1 rounded-full border border-cyan-400/30 animate-pulse-slow"
-              style={{ opacity: 0.6 }} // Reduced opacity
-            />
-          </div>
-
-          {/* Hover Expansion Rings with reduced opacity */}
-          {isPointer && (
-            <>
-              <div className="absolute -inset-2 rounded-full border border-emerald-400/20 animate-ping-slow" />
-              <div className="absolute -inset-3 rounded-full border border-cyan-400/15 animate-ping-slower" />
-            </>
-          )}
-
-          {/* Dynamic Crosshair with reduced opacity */}
-          <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
-            isPointer ? "opacity-0 scale-0" : "opacity-30 scale-100"
-          }`}>
-            <div className="flex items-center justify-center">
-              <div className="w-6 h-px bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent" />
-              <div className="h-6 w-px bg-gradient-to-b from-transparent via-emerald-400/50 to-transparent absolute" />
-            </div>
-          </div>
-        </div>
-      </div>
-
+      {/* Global Styles */}
       <style>{`
-        @keyframes spin-slow {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
+        * {
+          cursor: none !important;
         }
         
-        @keyframes orbit-slow {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
+        @keyframes cursorPulse {
+          0% { opacity: 0.4; transform: translate(-50%, -50%) scale(0.8); }
+          100% { opacity: 0; transform: translate(-50%, -50%) scale(2.5); }
         }
         
-        @keyframes orbit-reverse {
-          0% { transform: rotate(360deg); }
-          100% { transform: rotate(0deg); }
+        @keyframes clickRipple {
+          0% { transform: translate(-50%, -50%) scale(0); opacity: 0.8; }
+          100% { transform: translate(-50%, -50%) scale(15); opacity: 0; }
         }
         
-        @keyframes pulse-slow {
-          0%, 100% { opacity: 0.4; transform: scale(1); }
-          50% { opacity: 0.6; transform: scale(1.05); }
+        @keyframes spinTick {
+          from { transform: translate(-50%, -50%) rotate(0deg); }
+          to { transform: translate(-50%, -50%) rotate(360deg); }
         }
         
-        @keyframes ping-slow {
-          0% { transform: scale(1); opacity: 0.6; }
-          75%, 100% { transform: scale(2); opacity: 0; }
-        }
-        
-        @keyframes ping-slower {
-          0% { transform: scale(1); opacity: 0.4; }
-          100% { transform: scale(2.5); opacity: 0; }
-        }
-        
-        @keyframes ripple {
-          0% { width: 0; height: 0; opacity: 0.6; }
-          100% { width: 80px; height: 80px; opacity: 0; }
-        }
-        
-        .animate-orbit-slow {
-          animation: orbit-slow 4s linear infinite;
-        }
-        
-        .animate-orbit-reverse {
-          animation: orbit-reverse 3s linear infinite;
-        }
-        
-        .animate-pulse-slow {
-          animation: pulse-slow 2s ease-in-out infinite;
-        }
-        
-        .animate-ping-slow {
-          animation: ping-slow 1.5s ease-out infinite;
-        }
-        
-        .animate-ping-slower {
-          animation: ping-slower 2s ease-out infinite;
-        }
-        
-        .animate-ripple {
-          animation: ripple 0.6s ease-out;
-        }
-        
-        .ease-out-expo {
-          transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
-        }
-        
-        .ease-out-back {
-          transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        
-        .bg-gradient-conic {
-          background: conic-gradient(from 0deg, transparent, currentColor, transparent);
+        @keyframes dashOffset {
+          to { stroke-dashoffset: 0; }
         }
       `}</style>
+
+      {/* Trail Layer */}
+      <div
+        ref={cursorTrail}
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          pointerEvents: "none",
+          zIndex: 9994,
+        }}
+      />
+
+      {/* Outer Glow Layer */}
+      <div
+        ref={cursorGlow}
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          pointerEvents: "none",
+          zIndex: 9995,
+        }}
+      >
+        <div
+          style={{
+            width: isPointer ? 60 : 40,
+            height: isPointer ? 60 : 40,
+            borderRadius: "50%",
+            background: `radial-gradient(circle, ${isPointer ? "#f9731633" : "#22c55e22"} 0%, transparent 70%)`,
+            transform: "translate(-50%, -50%)",
+            transition: "width 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1), height 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1)",
+            filter: "blur(8px)",
+          }}
+        />
+      </div>
+
+      {/* Outer Ring — follows with lag and dynamic styling */}
+      <div
+        ref={cursorOuter}
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          pointerEvents: "none",
+          zIndex: 9997,
+        }}
+      >
+        <div
+          style={{
+            width: isPointer ? 34 : 26,
+            height: isPointer ? 34 : 26,
+            borderRadius: "50%",
+            border: `2px solid ${isPointer ? "#f97316" : "#22c55e"}`,
+            transform: `translate(-50%, -50%) scale(${isClicked ? 0.7 : 1})`,
+            transition: "width 0.2s cubic-bezier(0.34, 1.2, 0.64, 1), height 0.2s cubic-bezier(0.34, 1.2, 0.64, 1), border-color 0.2s ease, transform 0.1s ease-out",
+            boxShadow: isPointer
+              ? "0 0 12px #f97316, inset 0 0 6px #f9731644"
+              : "0 0 8px #22c55e, inset 0 0 4px #22c55e33",
+            background: isPointer ? "#f973160a" : "#22c55e05",
+          }}
+        />
+        
+        {/* Corner ticks with animation */}
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: isPointer ? 34 : 26,
+            height: isPointer ? 34 : 26,
+            transition: "width 0.2s ease, height 0.2s ease",
+          }}
+        >
+          {[
+            { top: -2, left: -2, borderTop: `2.5px solid ${isPointer ? "#f97316" : "#22c55e"}`, borderLeft: `2.5px solid ${isPointer ? "#f97316" : "#22c55e"}` },
+            { top: -2, right: -2, borderTop: `2.5px solid ${isPointer ? "#f97316" : "#22c55e"}`, borderRight: `2.5px solid ${isPointer ? "#f97316" : "#22c55e"}` },
+            { bottom: -2, left: -2, borderBottom: `2.5px solid ${isPointer ? "#f97316" : "#22c55e"}`, borderLeft: `2.5px solid ${isPointer ? "#f97316" : "#22c55e"}` },
+            { bottom: -2, right: -2, borderBottom: `2.5px solid ${isPointer ? "#f97316" : "#22c55e"}`, borderRight: `2.5px solid ${isPointer ? "#f97316" : "#22c55e"}` },
+          ].map((style, i) => (
+            <div
+              key={i}
+              style={{
+                position: "absolute",
+                width: 6,
+                height: 6,
+                opacity: isPointer ? 1 : 0.5,
+                transition: "opacity 0.25s ease, border-color 0.2s ease",
+                animation: isPointer ? "spinTick 4s linear infinite" : "none",
+                animationDelay: `${i * 0.25}s`,
+                ...style,
+              }}
+            />
+          ))}
+        </div>
+        
+        {/* Inner rotating ring on hover */}
+        {isPointer && (
+          <div
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              width: 40,
+              height: 40,
+              transform: "translate(-50%, -50%)",
+              borderRadius: "50%",
+              border: `1px dashed #f9731688`,
+              animation: "spinTick 8s linear infinite",
+            }}
+          />
+        )}
+      </div>
+
+      {/* Inner Dot — snaps to mouse instantly */}
+      <div
+        ref={cursorInner}
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          pointerEvents: "none",
+          zIndex: 9999,
+        }}
+      >
+        <div
+          style={{
+            width: isClicked ? 4 : isPointer ? 5 : 5,
+            height: isClicked ? 4 : isPointer ? 5 : 5,
+            borderRadius: "50%",
+            background: isPointer ? "#f97316" : "#22c55e",
+            transform: "translate(-50%, -50%)",
+            transition: "width 0.1s ease, height 0.1s ease, background 0.2s ease",
+            boxShadow: `0 0 12px ${isPointer ? "#f97316" : "#22c55e"}, 0 0 4px ${isPointer ? "#f97316cc" : "#86efac"}`,
+          }}
+        />
+      </div>
     </>
   );
 }
