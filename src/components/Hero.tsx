@@ -445,7 +445,7 @@ const Hero = ({ isDark }: HeroProps) => {
       </div>
 
       {/* Enhanced Scroll Indicator */}
-      <button
+      {/* <button
         onClick={() => {
           window.scrollTo({
             top: document.body.scrollHeight,
@@ -470,7 +470,7 @@ const Hero = ({ isDark }: HeroProps) => {
             }`}
           ></div>
         </div>
-      </button>
+      </button> */}
 
       {/* Add CSS for floating ring animations */}
       <style>{`

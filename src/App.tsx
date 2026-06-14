@@ -9,6 +9,7 @@ import Portfolio from "./components/Portfolio";
 import Contact from "./components/Contact";
 import Resume from "./components/Resume";
 import CursorFollower from "./components/CursorFollower";
+import AIChat from "./components/AIChat";
 // import CursorFollower from "./components/CursorFollower";
 
 function App() {
@@ -113,6 +114,9 @@ function App() {
       >
         <p className="text-sm">© 2025 Md Kamran. All rights reserved.</p>
       </footer>
+
+      {/* AI Chat Assistant */}
+      <AIChat isDark={isDark} />
     </div>
   );
 }
